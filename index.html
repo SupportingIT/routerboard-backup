@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Routerboard-backup by heximcz</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Routerboard-backup</h1>
+        <p>Ultimate backup of yours mikrotik routerboards.</p>
+        <p class="view"><a href="https://github.com/heximcz/routerboard-backup">View the Project on GitHub <small>heximcz/routerboard-backup</small></a></p>
+        <ul>
+          <li><a href="https://github.com/heximcz/routerboard-backup/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/heximcz/routerboard-backup/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/heximcz/routerboard-backup">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="mikrotik-routerboard-backup" class="anchor" href="#mikrotik-routerboard-backup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Mikrotik Routerboard Backup</h1>
+
+<p><a href="https://github.com/heximcz/routerboard-backup/releases"><img src="https://poser.pugx.org/routerboard-backup/routerboard-backup/v/stable" alt="Latest Stable Version"></a>
+<a href="https://travis-ci.org/heximcz/routerboard-backup"><img src="https://travis-ci.org/heximcz/routerboard-backup.svg?branch=master" alt="Build Status"></a>
+<a href="https://github.com/heximcz/routerboard-backup"><img src="https://poser.pugx.org/routerboard-backup/routerboard-backup/v/unstable" alt="Latest Unstable Version"></a>
+<a href="https://github.com/heximcz/routerboard-backup/blob/master/LICENSE.md"><img src="https://poser.pugx.org/routerboard-backup/routerboard-backup/license" alt="License"></a>
+<a href="https://codecov.io/github/heximcz/routerboard-backup?branch=master"><img src="https://codecov.io/github/heximcz/routerboard-backup/coverage.svg?branch=master" alt="codecov.io"></a></p>
+
+<h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>Ultimate backup of your mikrotik routerboards.</p>
+
+<h2>
+<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prerequisites</h2>
+
+<p>PHP &gt; 5.6.x</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Auto generate RSA key if it does not exist.</li>
+<li>Create a new account for backup on a routerboard with a public key</li>
+<li>Get routerboard identity and save IP address along with this one to database</li>
+<li>When backing up the routerboard, delete the old backup  to create new ones . Only the current backup will remain on the routerboard; it will not fill the disk with the old backup.</li>
+<li>Create standard .backup and .rsc backup files in the form of a script</li>
+<li>Your backups are stored on a local disk to the directories; each have in their name an identity and IP address of the backed-up device.</li>
+<li>Your backups on the local disk are automatically replaced with the current backup. Only the last five backups remain. You will never have a full disk, even after many years to come.</li>
+<li>If an error occurs while backing up, an email will be sent automatically </li>
+</ul>
+
+<h2>
+<a id="recommended" class="anchor" href="#recommended" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Recommended</h2>
+
+<ul>
+<li>For this backup system we recommend version <strong>RouterOS 6.32.3</strong>, because new versions have some problems with file transfer via SCP.</li>
+<li><strong>Fixed in RouterOS 6.35rc5</strong></li>
+</ul>
+
+<h2>
+<a id="how-to-install" class="anchor" href="#how-to-install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to install</h2>
+
+<ul>
+<li>Connet via SSH to your web server</li>
+</ul>
+
+<div class="highlight highlight-source-shell"><pre>$ <span class="pl-c1">cd</span> /opt/
+$ git clone https://github.com/heximcz/routerboard-backup.git
+$ <span class="pl-c1">cd</span> /opt/routerboard-backup/
+$ git tag -l
+$ git checkout tags/<span class="pl-k">&lt;</span>last tag name of stable version<span class="pl-k">&gt;</span>
+$ cp ./config.default.yml ./config.yml
+$ mkdir -p /var/log/routerboard-backup/</pre></div>
+
+<ul>
+<li> <strong>do not forget to configure the config.yml</strong>
+</li>
+</ul>
+
+<h2>
+<a id="create-database" class="anchor" href="#create-database" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create database</h2>
+
+<div class="highlight highlight-source-shell"><pre>
+CREATE TABLE IF NOT EXISTS <span class="pl-s"><span class="pl-pds">`</span>routers<span class="pl-pds">`</span></span> (
+  <span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span> int(11) NOT NULL,
+  <span class="pl-s"><span class="pl-pds">`</span>addr<span class="pl-pds">`</span></span> char(15) COLLATE utf8_bin NOT NULL COMMENT <span class="pl-s"><span class="pl-pds">'</span>IP address<span class="pl-pds">'</span></span>,
+  <span class="pl-s"><span class="pl-pds">`</span>identity<span class="pl-pds">`</span></span> varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT <span class="pl-s"><span class="pl-pds">'</span>System identity<span class="pl-pds">'</span></span>,
+  <span class="pl-s"><span class="pl-pds">`</span>created<span class="pl-pds">`</span></span> datetime NOT NULL,
+  <span class="pl-s"><span class="pl-pds">`</span>modify<span class="pl-pds">`</span></span> datetime DEFAULT NULL,
+  <span class="pl-s"><span class="pl-pds">`</span>lastbackup<span class="pl-pds">`</span></span> datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin<span class="pl-k">;</span>
+
+ALTER TABLE <span class="pl-s"><span class="pl-pds">`</span>routers<span class="pl-pds">`</span></span>
+  ADD PRIMARY KEY (<span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span>)<span class="pl-k">;</span>
+
+ALTER TABLE <span class="pl-s"><span class="pl-pds">`</span>routers<span class="pl-pds">`</span></span>
+  MODIFY <span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span> int(11) NOT NULL AUTO_INCREMENT<span class="pl-k">;</span>
+</pre></div>
+
+<h2>
+<a id="how-to-update-routerboard-backup" class="anchor" href="#how-to-update-routerboard-backup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to update Routerboard Backup</h2>
+
+<div class="highlight highlight-source-shell"><pre>$ <span class="pl-c1">cd</span> /opt/routerboard-backup/
+$ git pull
+$ git tag -l
+$ git checkout tags/<span class="pl-k">&lt;</span>last tag name of stable version<span class="pl-k">&gt;</span></pre></div>
+
+<ul>
+<li>How simply find out how to check the tag</li>
+</ul>
+
+<div class="highlight highlight-source-shell"><pre>$ git describe --tags</pre></div>
+
+<h2>
+<a id="example-usage" class="anchor" href="#example-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Usage</h2>
+
+<p>print help:</p>
+
+<p><code>php ./routerboard-backup.php</code></p>
+
+<p><code>php ./routerboard-backup rb:mod -h</code></p>
+
+<p><code>php ./routerboard-backup rb:backup -h</code></p>
+
+<p><code>php ./routerboard-backup rb:list -h</code></p>
+
+<h2>
+<a id="using-via-crontab" class="anchor" href="#using-via-crontab" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using via crontab</h2>
+
+<p>add this line to your /etc/crontab: (backup of all in database one per week)</p>
+
+<p><code>0 0  * * 6   root /usr/bin/php /opt/routerboard-backup/routerboard-backup.php rb:backup &gt;&gt; /var/log/routerboard-backup/routerboard-backup.log</code></p>
+
+<h2>
+<a id="logrotate-script" class="anchor" href="#logrotate-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Logrotate script</h2>
+
+<p><code>nano /etc/logrotate.d/routerboard-backup</code></p>
+
+<div class="highlight highlight-source-shell"><pre>/var/log/routerboard-backup/<span class="pl-k">*</span>.log
+{
+    rotate 5
+    monthly
+    compress
+    missingok
+    notifempty
+}</pre></div>
+
+<h2>
+<a id="youtube-video-how-to" class="anchor" href="#youtube-video-how-to" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>YouTube video: How to</h2>
+
+<p><a href="https://www.youtube.com/watch?v=-bOup-f3Eeo"><img src="http://img.youtube.com/vi/-bOup-f3Eeo/0.jpg" alt="Routerboard Backup Video How To"></a></p>
+
+<h2>
+<a id="product-microsite" class="anchor" href="#product-microsite" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Product microsite</h2>
+
+<p><a href="https://routerboard-backup.best-hosting.cz/">https://routerboard-backup.best-hosting.cz/</a></p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>MIT</p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/heximcz">heximcz</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
