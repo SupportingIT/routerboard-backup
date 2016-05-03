@@ -11,7 +11,7 @@ interface IBackupFilesystem {
 	 * @param string $extension of a file
 	 * @param integer $rotate how many backup files keep
 	 */
-	public function rotateBackupFiles($directory, $extension, $rotate = 5);
+	public function rotateBackupFiles($directory, $extension, $rotate);
 	
 	/**
 	 * Save backup file from routerboard
@@ -23,6 +23,6 @@ interface IBackupFilesystem {
 	 * @param string $identity of the routerboard, may be false
 	 * @return boolean
 	 */
-	public function saveBackupFile($addr, $content, $filename, $extension, $identity=false);
+	public function saveBackupFile($addr, $content, $folder, $filename, $extension, $identity = NULL);
 
 }

@@ -4,7 +4,27 @@ system:
     backupdir: '/home/user/backup/'
     # where is RSA pub key (if id_rsa and id_rsa.pub files no exist, they will be created auutomaticaly)
     ssh-dir: '/home/user/.ssh/'
+    # backup rotation (how much backup files will be stored for one device in the backupdir, min = 5)
+    backup-rotate: 5
 
+# Save backups to GitLab
+gitlab:
+    # gitlab api url - like this: http://git.your-domain.com/api/v3/ (required)
+    url: ''
+    # gitlab username (required) - email as username is not allowed
+    username: ''
+    # gitlab project name (required)
+    project-name: 'rbackup'
+    # group name (optional) - ! user must have enabled premission for create a group 
+    # leave empty if you do not use a group
+    group-name: ''
+    # authentication method - 'http_token'
+    auth-method: 'http_token'
+    # token key - Keep it secret! (required)
+    token: ''
+    # debug = 1, default = 0 
+    debug: 0
+    
 # Admin routerboard account (this login is used only when you add new router)
 routerboard:
     # admin routerboard user

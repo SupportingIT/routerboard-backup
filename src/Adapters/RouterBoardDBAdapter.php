@@ -42,11 +42,12 @@ ALTER TABLE `routers`
 	}
 	
 	/**
-	 * @see \Src\Adapters\IAdapter::setData()
+	 * @see \Src\Adapters\IAdapter::addIP()
 	 */
-	public function addIP($addr,$identity) {
+	public function addIP($addr, $port, $identity) {
 		$args = [
 				'addr' => $addr,
+				'port' => $port,
 				'identity' => $identity,
 				'created' => new \DateTime()
 		];
@@ -59,10 +60,10 @@ ALTER TABLE `routers`
 	}
 
 	/**
-	 * @see \Src\Adapters\IAdapter::getData()
+	 * @see \Src\Adapters\IAdapter::getIP()
 	 */
 	public function getIP() {
-		if ( $result = dibi::query('SELECT [id], [addr], [identity] FROM [routers]') )
+		if ( $result = dibi::query('SELECT [id], [addr], [port], [identity] FROM [routers]') )
 			return $result->fetchAssoc('id');
 		return false;
 	}
@@ -71,7 +72,7 @@ ALTER TABLE `routers`
 	 * @see \Src\Adapters\IAdapter::getOneIP()
 	 */
 	public function getOneIP($addr) {
-		if ( $result = dibi::query('SELECT [id], [addr], [identity] FROM [routers] WHERE [addr]=%s', $addr) )
+		if ( $result = dibi::query('SELECT [id], [addr], [port], [identity] FROM [routers] WHERE [addr]=%s', $addr) )
 			return $result->fetchAll();
 		return false;
 	}
@@ -79,9 +80,10 @@ ALTER TABLE `routers`
 	/**
 	 * @see \Src\Adapters\IAdapter::updateIP()
 	 */
-	public function updateIP($oldAddr, $newAddr, $identity) {
+	public function updateIP($oldAddr, $newAddr, $newPort, $identity) {
 		$args = [
 				'addr' => $newAddr,
+				'port' => $newPort,
 				'identity' => $identity,
 				'modify' => new \DateTime()
 		];

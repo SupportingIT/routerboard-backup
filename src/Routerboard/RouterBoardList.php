@@ -2,18 +2,16 @@
 
 namespace Src\RouterBoard;
 
-use Src\Adapters\RouterBoardDBAdapter;
-
 class RouterBoardList extends AbstractRouterBoard {
 	
 	/**
 	 * Print all info about routers from backup list
 	 */
 	public function printAllRouterBoards() {
-		$db = new RouterBoardDBAdapter( $this->config, $this->logger );
-		if ( $result = $db->getIP() ) {
+		$dbconnect = new $this->config['database']['data-adapter']($this->config, $this->logger);
+		if ( $result = $dbconnect->getIP() ) {
 			foreach ($result as $data) {
-				$this->logger->log( $data['identity'] . ' - ' . $data['addr'], $this->logger->setNotice() );
+				$this->logger->log( $data['identity'] . ' - ' . $data['addr'] . ':' . $data['port'], $this->logger->setNotice() );
 			}
 			return;
 		}
